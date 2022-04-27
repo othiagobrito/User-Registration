@@ -16,17 +16,16 @@ class Login(UserActions):
         self.login(user, password)
         
     
-    def login(user, password):
+    def login(self, user, password):
         mydb = connection("user-database")
         mycursor = mydb.cursor()
 
         mycursor.execute(f"SELECT user,password FROM login")
         usersList = mycursor.fetchall()
-        print(usersList)
 
         for i in usersList:
             if user == i[0] and password == i[1]:
-                print(f"Welcome, {user}!")
+                print(f"\nWelcome, {user}!")
                 break
         else:
             print("Incorrect name or password!")
@@ -62,4 +61,4 @@ class Register(UserActions):
 
 if __name__ == "__main__":
     # user = Register("na12", "12345678")
-    user = Login.login("abc", "12345678")
+    user = Login("abc", "12345678")
