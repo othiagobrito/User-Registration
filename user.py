@@ -12,6 +12,8 @@ class Login(UserActions):
 
         self.user = user
         self.password = password
+
+        self.login(user, password)
         
     
     def login(user, password):
