@@ -1,4 +1,3 @@
-import sys
 from userActions import *
 from getpass import getpass
 

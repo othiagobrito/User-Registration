@@ -1,3 +1,4 @@
+from collections import UserList
 from connection import connection
 
 class UserActions:
@@ -20,13 +21,11 @@ class Login(UserActions):
         mydb = connection("user-database")
         mycursor = mydb.cursor()
 
-        mycursor.execute(f"SELECT user,password FROM login")
+        mycursor.execute(f"SELECT user,password FROM login WHERE user='{user}' and password='{password}'")
         usersList = mycursor.fetchall()
 
-        for i in usersList:
-            if user == i[0] and password == i[1]:
-                print(f"\nWelcome, {user}!")
-                break
+        if usersList:
+            print(f"Welcome, {usersList[0][0]}")
         else:
             print("Incorrect name or password!")
 
@@ -35,20 +34,32 @@ class Login(UserActions):
 class Register(UserActions):
     def __init__(self, user, password):
         super().__init__(user, password)
-    
-        if len(user) >= 3:
-            self.user = user
-        else:
-            raise ValueError("Invalid username. Username must have 3 or more characters!")
-            
-        if len(password) >= 8:
-            self.password = password
-        else:
-            raise ValueError("Invalid password. Password must have 8 to 15 characters!")
 
-        if self.user and self.password:
-            self.register(user, password)
+        if self.check_user(user):
+            print(f"{self.user} already exists!")
+        else:
+            if len(user) >= 3:
+                self.user = user
+            else:
+                raise ValueError("Invalid username. Username must have 3 or more characters!")
+                
+            if len(password) >= 8:
+                self.password = password
+            else:
+                raise ValueError("Invalid password. Password must have 8 to 15 characters!")
+
+            if self.user and self.password:
+                self.register(user, password)
     
+    def check_user(self, user):
+        mydb = connection("user-database")
+        mycursor = mydb.cursor()
+
+        mycursor.execute(f"SELECT user,password FROM login WHERE user='{user}'")
+        usersList = mycursor.fetchall()
+
+        return usersList
+
     def register(self, user, password):
         mydb = connection("user-database")
         mycursor = mydb.cursor()
